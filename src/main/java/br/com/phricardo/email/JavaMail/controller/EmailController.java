@@ -1,10 +1,8 @@
 package br.com.phricardo.email.JavaMail.controller;
 
+import br.com.phricardo.email.JavaMail.model.Email;
 import br.com.phricardo.email.JavaMail.service.EmailService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/api/v1/email")
@@ -17,11 +15,9 @@ public class EmailController {
     }
 
     @PostMapping("/send")
-    public String sendEmail(@RequestParam("to") String to,
-                            @RequestParam("subject") String subject,
-                            @RequestParam("text") String text) {
+    public String sendEmail(@RequestBody Email email) {
 
-        emailService.sendEmail(to, subject, text);
+        emailService.sendEmail(email.getTo(), email.getSubject(), email.getText());
 
         return "Email sent successfully!";
     }
