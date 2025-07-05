@@ -1,4 +1,4 @@
-package br.com.phricardo.email.JavaMail;
+package com.phricardo.email.JavaMail;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

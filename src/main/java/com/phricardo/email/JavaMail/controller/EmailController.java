@@ -1,9 +1,8 @@
-package br.com.phricardo.email.JavaMail.controller;
+package com.phricardo.email.JavaMail.controller;
 
-import br.com.phricardo.email.JavaMail.model.Email;
-import br.com.phricardo.email.JavaMail.service.EmailService;
+import com.phricardo.email.JavaMail.model.Email;
+import com.phricardo.email.JavaMail.service.EmailService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.http.HttpStatus.ACCEPTED;

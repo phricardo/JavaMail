@@ -1,7 +1,7 @@
-package br.com.phricardo.email.JavaMail.service;
+package com.phricardo.email.JavaMail.service;
 
-import br.com.phricardo.email.JavaMail.model.Email;
-import br.com.phricardo.email.JavaMail.model.EmailBody;
+import com.phricardo.email.JavaMail.model.Email;
+import com.phricardo.email.JavaMail.model.EmailBody;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 
@@ -14,9 +14,6 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
-import java.util.Properties;
 
 @Slf4j
 @Service

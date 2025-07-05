@@ -1,4 +1,4 @@
-package br.com.phricardo.email.JavaMail.model;
+package com.phricardo.email.JavaMail.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
