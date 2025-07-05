@@ -2,36 +2,32 @@ package br.com.phricardo.email.JavaMail.service;
 
 import br.com.phricardo.email.JavaMail.model.Email;
 import br.com.phricardo.email.JavaMail.model.EmailBody;
-import jakarta.mail.MessagingException;
+import static java.util.Optional.of;
+import static java.util.Optional.ofNullable;
+
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailSendException;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-
-import static java.util.Optional.of;
-import static java.util.Optional.ofNullable;
+import java.util.Properties;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class EmailService {
 
-    private final JavaMailSender javaMailSender;
-
-    @Value("${spring.mail.properties.mail.from}")
-    public String from;
-
+    @Async
     public void sendEmail(@NonNull final Email email) {
+        log.info("Starting sendEmail on thread: {}", Thread.currentThread().getName());
         try {
-            val hasHtml = of(email)
+            val hasHtml = ofNullable(email)
                     .map(Email::getBody)
                     .map(EmailBody::getHtml)
                     .isPresent();
@@ -44,20 +40,36 @@ public class EmailService {
                             .map(EmailBody::getText)
                             .orElseThrow());
 
-            val message = javaMailSender.createMimeMessage();
+
+            val mailSender = createDynamicSender(email);
+            val message = mailSender.createMimeMessage();
             val helper = new MimeMessageHelper(message, true, "UTF-8");
 
-            helper.setFrom(from);
+            helper.setFrom(email.getFrom());
             helper.setTo(email.getTo());
             helper.setSubject(email.getSubject());
             helper.setText(content, hasHtml);
 
-            javaMailSender.send(message);
-
+            mailSender.send(message);
         } catch (final MailSendException ex) {
             log.error("Error sending email to '{}'", email.getTo(), ex);
         } catch (final Exception ex) {
             log.error("Unknown error occurred while sending email", ex);
         }
+    }
+
+    private JavaMailSenderImpl createDynamicSender(final Email email) {
+        val mailSender = new JavaMailSenderImpl();
+        mailSender.setHost(email.getHost());
+        mailSender.setPort(email.getPort());
+        mailSender.setUsername(email.getUsername());
+        mailSender.setPassword(email.getPassword());
+
+        val props = mailSender.getJavaMailProperties();
+        props.put("mail.transport.protocol", "smtp");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+
+        return mailSender;
     }
 }
