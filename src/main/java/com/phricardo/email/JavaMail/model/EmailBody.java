@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder(toBuilder = true)
 public class EmailBody {
 
-    private String text;
-    private String html;
+  private String text;
+  private String html;
 }
